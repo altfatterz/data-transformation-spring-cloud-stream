@@ -29,7 +29,7 @@ public class TransferFeeCalculator {
     }
 
     private TransferFee calculateTransferFee(BigDecimal amount, Currency currency, PaymentMethod paymentMethod) {
-        TransferFee transferFee = null;
+        TransferFee transferFee;
         switch (paymentMethod) {
             case BANK_TRANSFER:
                 transferFee = new TransferFee(BigDecimal.ZERO, currency);

@@ -21,29 +21,48 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.cloud.stream.test.matcher.MessageQueueMatcher.receivesPayloadThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment= RANDOM_PORT)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 public class TransferFeeCalculatorTests {
 
-	@Autowired
-	private Bank bank;
+    @Autowired
+    private Bank bank;
 
-	@Autowired
-	private MessageCollector collector;
+    @Autowired
+    private MessageCollector collector;
 
-	@Test
-	public void testTransformer() {
-		SubscribableChannel transfers = bank.transfers();
+    @Test
+    public void testTransformer() {
+        SubscribableChannel transfers = bank.transfers();
 
-		Map<String, Object> headers = new HashMap<>();
-		headers.put("contentType", "application/xml");
-		String msg = "<transfer><amount>451</amount><fromCurrency>EUR</fromCurrency></transfer>";
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("contentType", "application/xml");
 
-		transfers.send(new GenericMessage<>(msg.getBytes(StandardCharsets.UTF_8), headers));
+        String msg = "" +
+                "<transfer>" +
+                "   <amount>451</amount>" +
+                "   <fromCurrency>EUR</fromCurrency>" +
+                "   <toCurrency>CHF</toCurrency>" +
+                "   <dateTime>2018-03-21T10:15:30</dateTime>" +
+                "   <paymentMethod>CREDIT_CARD</paymentMethod>" +
+                "</transfer>";
 
-		BlockingQueue<Message<?>> messages = this.collector.forChannel(bank.transfersWithFee());
+        transfers.send(new GenericMessage<>(msg.getBytes(StandardCharsets.UTF_8), headers));
 
-		assertThat(messages, receivesPayloadThat(is("{\"amount\":\"451\"}")));
+        BlockingQueue<Message<?>> messages = this.collector.forChannel(bank.transfersWithFee());
 
-	}
+        assertThat(messages, receivesPayloadThat(is(
+                "{" +
+                        "\"amount\":451," +
+                        "\"fromCurrency\":\"EUR\"," +
+                        "\"toCurrency\":\"CHF\"," +
+                        "\"dateTime\":\"2018-03-21T10:15:30\"," +
+                        "\"paymentMethod\":\"CREDIT_CARD\"," +
+                        "\"transferFee\":{" +
+                        "\"amount\":5.5924,\"" +
+                        "currency\":\"EUR\"}" +
+                        "}"
+        )));
+
+    }
 
 }
