@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        transfers-with-fee:
+          content-type: application/json
+        transfers:
+          content-type: application/xml
