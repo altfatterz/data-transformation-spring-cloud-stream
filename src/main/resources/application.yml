@@ -1,4 +1,7 @@
 spring:
+  application:
+    name: transfer-fee-calculator
+
   cloud:
     stream:
       bindings:
@@ -10,3 +13,12 @@ spring:
           content-type: application/xml
           # otherwise we get a auto-delete, non-durable queue, applies only to consumers
           group: queue
+
+# by default only 'health' and 'info' endpoints are included
+# http://www.baeldung.com/spring-boot-actuators
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ['*']
