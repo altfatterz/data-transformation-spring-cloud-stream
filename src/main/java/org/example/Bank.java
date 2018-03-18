@@ -7,7 +7,7 @@ import org.springframework.messaging.SubscribableChannel;
 
 public interface Bank {
 
-    String TRANSFERS = "transfer";
+    String TRANSFERS = "transfers";
 
     String TRANSFERS_WITH_FEE = "transfers-with-fee";
 
