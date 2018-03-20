@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.SubscribableChannel;
@@ -17,6 +18,9 @@ import java.util.concurrent.BlockingQueue;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.cloud.stream.test.matcher.MessageQueueMatcher.receivesPayloadThat;
 
@@ -29,6 +33,9 @@ public class TransferFeeCalculatorTests {
 
     @Autowired
     private MessageCollector collector;
+
+    @SpyBean
+    private TransferFeeCalculator transferFeeCalculator;
 
     @Test
     public void testTransformer() {
@@ -62,6 +69,8 @@ public class TransferFeeCalculatorTests {
                         "currency\":\"EUR\"}" +
                         "}"
         )));
+
+        verify(this.transferFeeCalculator, times(1)).transform(any(Transfer.class));
 
     }
 
