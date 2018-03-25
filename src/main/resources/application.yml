@@ -5,14 +5,16 @@ spring:
   cloud:
     stream:
       bindings:
-        transfers-with-fee:
-          content-type: application/json
-          producer:
-            required-groups: queue
         transfers:
+          destination: money-transfers
           content-type: application/xml
           # otherwise we get a auto-delete, non-durable queue, applies only to consumers
           group: queue
+        transfers-with-fee:
+          destiantion: money-transfers-with-fee
+          content-type: application/json
+          producer:
+            required-groups: queue
 
 # by default only 'health' and 'info' endpoints are included
 # http://www.baeldung.com/spring-boot-actuators
