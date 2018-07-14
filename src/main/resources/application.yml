@@ -11,7 +11,7 @@ spring:
           # otherwise we get a auto-delete, non-durable queue, applies only to consumers
           group: queue
         transfers-with-fee:
-          destiantion: money-transfers-with-fee
+          destination: money-transfers-with-fee
           content-type: application/json
           producer:
             required-groups: queue
